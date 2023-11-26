@@ -70,6 +70,8 @@ function Menu() {
         <section className="menu">
             <h2>Our menu</h2>
 
+            
+
           {/* when using short cercuting our condition should always evlutate to true or false, cannot have an actual value */}
           {/* react won't render true or false value let say "pizzaQty &&" -> this will give us 0 on the browser */}
           {/* because of this behaviour some says we should never use short circutingto make a conditional  */}
@@ -80,10 +82,20 @@ function Menu() {
             } */}
 
           {/* Ternary operator */}
-            { pizzasQty > 0 ? (
-              <ul className="pizzas">
-                {pizzas.map(pizza => <Pizza pizzaObj={pizza} key={pizza.name} />)}
-              </ul>) : <p>We are still workig on our menu. Please, come back later</p>
+            { pizzasQty > 0 ? 
+              (
+                // react fregment - <> </>
+                //<React.Fragment key=""> - if we have a list and we need the key
+                <>
+                  <p>Authentic Italian cuisin. Six creative dishes to choose from. All from our stone oven, all organic, all delicious.</p>
+    
+                  <ul className="pizzas">
+                    {pizzas.map(pizza => <Pizza pizzaObj={pizza} key={pizza.name} />)}
+                  </ul>
+                </>
+              )
+              : 
+              (<p>We are still workig on our menu. Please, come back later</p>)
             }
             
 
@@ -99,19 +111,19 @@ function Menu() {
 // in React we create new componants writing functions - each componant can return exactely one element
 // 1. function need to start with uppercase
 // 2. function needs to return some mark-up
-function Pizza(props) {
-  console.log(props);
+function Pizza({pizzaObj}) {
+  console.log(pizzaObj);
 
   // the early return returns either nothing or the whole componant
-  if(props.pizzaObj.soldOut) return null;
+  // if(pizzaObj.soldOut) return null;
 
   return (
-    <li className="pizza">
-      <img src={props.pizzaObj.photoName} alt={props.pizzaObj.name} />
+    <li className={`pizza ${pizzaObj.soldOut ? "sold-out" : ""}`}>
+      <img src={pizzaObj.photoName} alt={pizzaObj.name} />
       <div>
-        <h3>{props.pizzaObj.name}</h3>
-        <p>{props.pizzaObj.ingredients}</p>
-        <span>{props.pizzaObj.price}</span>
+        <h3>{pizzaObj.name}</h3>
+        <p>{pizzaObj.ingredients}</p>
+        <span>{pizzaObj.soldOut ? "Sold out" : pizzaObj.price}</span>
       </div>
     </li>
   );
