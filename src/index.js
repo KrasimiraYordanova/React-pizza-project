@@ -71,9 +71,20 @@ function Menu() {
             <h2>Our menu</h2>
 
           {/* when using short cercuting our condition should always evlutate to true or false, cannot have an actual value */}
-            {pizzasQty > 0 && (<ul className="pizzas">
-              {pizzas.map(pizza => <Pizza pizzaObj={pizza} key={pizza.name} />)}
-            </ul>)}
+          {/* react won't render true or false value let say "pizzaQty &&" -> this will give us 0 on the browser */}
+          {/* because of this behaviour some says we should never use short circutingto make a conditional  */}
+            {/* { pizzasQty > 0 && (
+              <ul className="pizzas">
+                {pizzas.map(pizza => <Pizza pizzaObj={pizza} key={pizza.name} />)}
+              </ul>) 
+            } */}
+
+          {/* Ternary operator */}
+            { pizzasQty > 0 ? (
+              <ul className="pizzas">
+                {pizzas.map(pizza => <Pizza pizzaObj={pizza} key={pizza.name} />)}
+              </ul>) : <p>We are still workig on our menu. Please, come back later</p>
+            }
             
 
             {/* {<div>
@@ -90,6 +101,10 @@ function Menu() {
 // 2. function needs to return some mark-up
 function Pizza(props) {
   console.log(props);
+
+  // the early return returns either nothing or the whole componant
+  if(props.pizzaObj.soldOut) return null;
+
   return (
     <li className="pizza">
       <img src={props.pizzaObj.photoName} alt={props.pizzaObj.name} />
@@ -105,17 +120,36 @@ function Pizza(props) {
 function Footer() {
     const hour = new Date().getHours();
     const open = 12;
-    const close = 21;
+    const close = 22;
     const isOpen = hour >= open && hour <= close
+
+    // early return - useful when we want to return entire componants, not pieces of jsx
+    // if (!isOpen)
+    //   return ( 
+    //   <p> We are happy to welcome you between {open} and {close} </p>
+    // );
    
     return (<footer className="footer">
-      {isOpen && (
+      {/* since isOpen is true the second part, after "&&" will be returned */}
+      {/* {isOpen && (
         <div className="order">
           <p>We are open untill {close}:00.</p>
           <button className="btn">Order</button>
-        </div>
-      )}
+        </div>)
+      } */}
+      {isOpen ? 
+        < OpeningTime openHour={open} closeHour={close} isOpen={isOpen} /> 
+         :
+        ( <p> We are happy to welcome you between {open} and {close} </p>)
+      }
     </footer>)
+}
+
+function OpeningTime(props) {
+  return <div className="order">
+          <p>We are open untill {props.closeHour}:00. You are very welcome top pay us a visit</p>
+          <button className="btn">Order</button>
+        </div>
 }
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
